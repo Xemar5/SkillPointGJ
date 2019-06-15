@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class Serpent : MonoBehaviour
+public class SerpentController : MonoBehaviour
 {
     [SerializeField]
     private NodeManager nodeManager;
     [SerializeField]
-    private NodeNoise nodeNoise;
+    private NodeModulation nodeNoise;
 
     [SerializeField]
     private PathFollower pathFollower;
@@ -43,6 +43,7 @@ public class Serpent : MonoBehaviour
         nodeManager.InitializeNodes(startingPosition, Vector2.left, speed * Time.fixedDeltaTime, widthMultiplier * Time.fixedDeltaTime, widthCurve);
         nodeManager.InitializeCollider(polygonCollider);
         pathManager.InitializePathFollower(pathFollower);
+        lastNode = nodeManager.nodesMiddle[nodeManager.NodeCount - 1];
     }
 
     private void OnDrawGizmos()
@@ -61,22 +62,15 @@ public class Serpent : MonoBehaviour
 
     private void FixedUpdate()
     {
-        nodeManager.UpdateMiddleTail();
 
         lastNode = nodeManager.CalculateVelocity(pathFollower.NodePosition, turning, speed * Time.fixedDeltaTime, lastNode);
         Node modulatedNode = nodeNoise.ModulateNode(lastNode);
         nodeManager.nodesMiddle[nodeManager.NodeCount - 1] = modulatedNode;
 
+        nodeManager.UpdateMiddleTail();
         nodeManager.UpdateSides();
         nodeManager.UpdateCollider(polygonCollider);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Vector2 point = collision.contacts[0].point;
-        Node closestNode = nodeManager.GetClosestNode(point);
-        collision.rigidbody.AddForce(closestNode.velocity, ForceMode2D.Impulse);
-        Debug.Log(closestNode.velocity);
-    }
 
 }

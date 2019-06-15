@@ -48,17 +48,20 @@ public class NodeManager : MonoBehaviour
             int index = nodeCount - i - 1;
             nodesMiddle[index].position = headPosition + tailDirection * speed * (float)i;
             nodesMiddle[index].velocity = velocity;
-            nodesMiddle[index].distance = 0;
+            nodesMiddle[index].side = NodeSide.Middle;
+            nodesMiddle[index].index = index;
 
             float ratio = (float)i / (float)(nodeCount - 1);
             float distance = widthCurve.Evaluate(ratio);
             nodesLeft[index].position = nodesMiddle[index].position + leftDirection * widthMultiplier * distance;
             nodesLeft[index].velocity = velocity;
-            nodesLeft[index].distance = distance;
+            nodesLeft[index].side = NodeSide.Left;
+            nodesLeft[index].index = index;
 
             nodesRight[index].position = nodesMiddle[index].position + rightDirection * widthMultiplier * distance;
             nodesRight[index].velocity = velocity;
-            nodesRight[index].distance = distance;
+            nodesRight[index].side = NodeSide.Right;
+            nodesRight[index].index = index;
         }
     }
 
@@ -98,15 +101,24 @@ public class NodeManager : MonoBehaviour
             float ratio = (float)i / (float)(nodeCount - 1);
             float width = widthCurve.Evaluate(ratio) * widthMultiplier;
 
-            Vector2 left = new Vector2(middle.velocity.y, -middle.velocity.x).normalized * width;
-            Vector2 right = new Vector2(-middle.velocity.y, middle.velocity.x).normalized * width;
-            nodesLeft[i].position = middle.position + left;
-            nodesLeft[i].velocity = middle.velocity;
-            nodesRight[i].position = middle.position + right;
-            nodesRight[i].velocity = middle.velocity;
+            Vector2 leftOffset = new Vector2(middle.velocity.y, -middle.velocity.x).normalized * width;
+            Vector2 rightOffset = new Vector2(-middle.velocity.y, middle.velocity.x).normalized * width;
+
+            Node left = nodesLeft[i];
+            Node right = nodesRight[i];
+
+            Vector2 lastLeft = left.position;
+            Vector2 lastRight = right.position;
+
+            left.position = middle.position + leftOffset;
+            left.velocity = left.position - lastLeft;
+            right.position = middle.position + rightOffset;
+            right.velocity = right.position - lastRight;
+
+            nodesLeft[i] = left;
+            nodesRight[i] = right;
         }
     }
-
 
     public void InitializeCollider(PolygonCollider2D collider)
     {
