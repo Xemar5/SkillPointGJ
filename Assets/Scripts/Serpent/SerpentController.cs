@@ -11,6 +11,8 @@ public class SerpentController : MonoBehaviour
     private NodeManager nodeManager;
     [SerializeField]
     private NodeModulation nodeNoise;
+    [SerializeField]
+    private SpriteRenderer head;
 
     [SerializeField]
     private PathFollower pathFollower;
@@ -62,7 +64,6 @@ public class SerpentController : MonoBehaviour
 
     private void FixedUpdate()
     {
-
         lastNode = nodeManager.CalculateVelocity(pathFollower.NodePosition, turning, speed * Time.fixedDeltaTime, lastNode);
         Node modulatedNode = nodeNoise.ModulateNode(lastNode);
         nodeManager.nodesMiddle[nodeManager.NodeCount - 1] = modulatedNode;
@@ -70,6 +71,8 @@ public class SerpentController : MonoBehaviour
         nodeManager.UpdateMiddleTail();
         nodeManager.UpdateSides();
         nodeManager.UpdateCollider(polygonCollider);
+        head.transform.localPosition = modulatedNode.position;
+        head.transform.localRotation = Quaternion.FromToRotation(Vector3.right, modulatedNode.velocity);
     }
 
 

@@ -37,12 +37,12 @@ public class NodeMeshRenderer : MonoBehaviour
             // 2 * i + 0 == right
             // 2 * i + 1 == left
             triangles[triangle + 0] = vertex;       // back right
-            triangles[triangle + 1] = vertex + 1;   // back left
-            triangles[triangle + 2] = vertex + 3;   // front left
+            triangles[triangle + 1] = vertex + 3;   // front left
+            triangles[triangle + 2] = vertex + 1;   // back left
 
             triangles[triangle + 3] = vertex;       // back right
-            triangles[triangle + 4] = vertex + 3;   // front left
-            triangles[triangle + 5] = vertex + 2;   // front right
+            triangles[triangle + 4] = vertex + 2;   // front right
+            triangles[triangle + 5] = vertex + 3;   // front left
         }
         return triangles;
     }
