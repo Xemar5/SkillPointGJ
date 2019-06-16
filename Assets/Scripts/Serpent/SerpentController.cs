@@ -46,6 +46,7 @@ public class SerpentController : MonoBehaviour
         nodeManager.InitializeCollider(polygonCollider);
         pathManager.InitializePathFollower(pathFollower);
         lastNode = nodeManager.nodesMiddle[nodeManager.NodeCount - 1];
+        head.enabled = true;
     }
 
     private void OnDrawGizmos()
